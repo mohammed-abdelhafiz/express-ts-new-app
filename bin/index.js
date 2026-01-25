@@ -38,9 +38,9 @@ function main() {
   const targetDir =
     projectName === "." ? process.cwd() : path.join(process.cwd(), projectName);
 
-  // Check if project exists (skip if using current directory)
+  // ❌ Stop if folder already exists (except current directory)
   if (projectName !== "." && fs.existsSync(targetDir)) {
-    console.error(`❌ Project already exists at ${targetDir}`);
+    console.error(`❌ Project "${projectName}" already exists at ${targetDir}`);
     process.exit(1);
   }
 
@@ -50,7 +50,7 @@ function main() {
   // Update package.json
   updatePackageJson(targetDir, projectName);
 
-  console.log(`✅ Project "${projectName}" created successfully! 🎉`);
+  console.log(`✅ Project created successfully at "${targetDir}" 🎉`);
   console.log("📦 Installing dependencies...");
 
   // Install runtime dependencies
@@ -101,7 +101,7 @@ NODE_ENV=development
   console.log("✨ Done!");
   console.log(`
 Next steps:
-  cd ${projectName === "." ? "." : projectName}
+  cd ${targetDir}
   npm run dev
 Happy coding! 🚀
 `);
