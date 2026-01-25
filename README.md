@@ -8,8 +8,8 @@
 
 - ⚡ Express.js
 - 📘 TypeScript
-- 🔄 Nodemon (for development)
-- 🔑 Dotenv for environment variables
+- 🔄 ts-node-dev (for development)
+- 🔑 dotenv for environment variables
 - ⚙️ Pre-configured scripts
 
 ---
@@ -48,7 +48,7 @@ This will:
 ## 🛠 Development (for contributing)
 
 ```bash
-git clone https://github.com/mohamed-abdelhafiz-dev/express-ts-new-app.git
+git clone https://github.com/mohammed-abdelhafiz/express-ts-new-app.git
 cd express-ts-new-app
 npm install
 ```

@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "node ./bin/index.js"
   },
-  "author": "mohamed-abdelhafiz-dev",
+  "author": "mohammed-abdelhafiz",
   "license": "MIT",
   "keywords": [
     "express",
@@ -23,10 +23,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mohamed-abdelhafiz-dev/express-ts-new-app.git"
+    "url": "git+https://github.com/mohammed-abdelhafiz/express-ts-new-app.git"
   },
   "bugs": {
-    "url": "https://github.com/mohamed-abdelhafiz-dev/express-ts-new-app/issues"
+    "url": "https://github.com/mohammed-abdelhafiz/express-ts-new-app/issues"
   },
-  "homepage": "https://github.com/mohamed-abdelhafiz-dev/express-ts-new-app#readme"
+  "homepage": "https://github.com/mohammed-abdelhafiz/express-ts-new-app#readme"
 }

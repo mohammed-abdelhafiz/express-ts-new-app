@@ -1,44 +1,71 @@
 #!/usr/bin/env node
 
-import fs from "fs";
-import path from "path";
-import url from "url";
-import { execSync } from "child_process";
+const fs = require("fs");
+const path = require("path");
+const url = require("url");
+const { execSync } = require("child_process");
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-const projectName = process.argv[2] || "my-express-app";
-const targetDir = path.join(process.cwd(), projectName);
-
-if (fs.existsSync(targetDir)) {
-  console.error(`❌ Project already exists at ${targetDir}`);
-  process.exit(1);
+// =======================
+// Helper functions
+// =======================
+function runCommand(command, cwd) {
+  execSync(command, { stdio: "inherit", cwd });
 }
 
-fs.cpSync(path.join(__dirname, "../template"), targetDir, { recursive: true });
+function copyTemplate(targetDir) {
+  const templateDir = path.join(__dirname, "../template");
+  fs.cpSync(templateDir, targetDir, { recursive: true });
+}
 
-const pkgPath = path.join(targetDir, "package.json");
-const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
-pkg.name = projectName;
-fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+function updatePackageJson(targetDir, projectName) {
+  const pkgPath = path.join(targetDir, "package.json");
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+  pkg.name = projectName;
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+}
 
-console.log(`✅ Project "${projectName}" created successfully! 🎉`);
-console.log("📦 Installing dependencies...");
+function createFile(filePath, content) {
+  fs.writeFileSync(filePath, content.trimStart());
+}
 
-// install runtime dependencies
-execSync("npm install express@latest dotenv@latest", {
-  stdio: "inherit",
-  cwd: targetDir,
-});
+// =======================
+// Main script
+// =======================
+function main() {
+  const projectName = process.argv[2] || "express-js-app";
+  const targetDir =
+    projectName === "." ? process.cwd() : path.join(process.cwd(), projectName);
 
-// install dev dependencies
-execSync(
-  "npm install -D @types/express@latest @types/node@latest nodemon@latest ts-node@latest typescript@latest eslint@latest @typescript-eslint/parser@latest @typescript-eslint/eslint-plugin@latest typescript-eslint@latest eslint-plugin-import@latest eslint-config-prettier@latest prettier@latest eslint-plugin-prettier@latest",
-  { stdio: "inherit", cwd: targetDir }
-);
+  // Check if project exists (skip if using current directory)
+  if (projectName !== "." && fs.existsSync(targetDir)) {
+    console.error(`❌ Project already exists at ${targetDir}`);
+    process.exit(1);
+  }
 
-// create .gitignore
-const gitignoreContent = `
+  // Copy template
+  copyTemplate(targetDir);
+
+  // Update package.json
+  updatePackageJson(targetDir, projectName);
+
+  console.log(`✅ Project "${projectName}" created successfully! 🎉`);
+  console.log("📦 Installing dependencies...");
+
+  // Install runtime dependencies
+  runCommand("npm install express@latest dotenv@latest", targetDir);
+
+  // Install dev dependencies
+  runCommand(
+    "npm install -D ts-node-dev@latest typescript@latest eslint@latest @typescript-eslint/parser@latest @typescript-eslint/eslint-plugin@latest typescript-eslint@latest eslint-plugin-import@latest eslint-config-prettier@latest prettier@latest eslint-plugin-prettier@latest @types/express@latest @types/node@latest",
+    targetDir
+  );
+
+  // Create .gitignore
+  createFile(
+    path.join(targetDir, ".gitignore"),
+    `
 # Node.js
 node_modules
 dist
@@ -52,32 +79,32 @@ yarn-error.log*
 # Editor
 .vscode
 .idea
-`;
+`
+  );
 
-fs.writeFileSync(
-  path.join(targetDir, ".gitignore"),
-  gitignoreContent.trimStart()
-);
-
-const dotenvContent = `
+  // Create .env
+  createFile(
+    path.join(targetDir, ".env"),
+    `
 # Environment variables
+PORT=5000
+NODE_ENV=development
+`
+  );
 
-`;
+  // Initialize Git
+  console.log("Initializing git repository...");
+  runCommand("git init", targetDir);
+  runCommand("git add .", targetDir);
+  runCommand('git commit -m "Initial commit"', targetDir);
 
-fs.writeFileSync(path.join(targetDir, ".env"), dotenvContent.trimStart());
-
-console.log("initializing git repository...");
-execSync("git init", { stdio: "inherit", cwd: targetDir });
-execSync("git add .", { stdio: "inherit", cwd: targetDir });
-execSync('git commit -m "Initial commit"', {
-  stdio: "inherit",
-  cwd: targetDir,
-});
-
-console.log("✨ Done!");
-console.log(`
+  console.log("✨ Done!");
+  console.log(`
 Next steps:
-  cd ${projectName}
+  cd ${projectName === "." ? "." : projectName}
   npm run dev
 Happy coding! 🚀
 `);
+}
+
+main();
