@@ -58,7 +58,7 @@ function main() {
 
   // Install dev dependencies
   runCommand(
-    "npm install -D ts-node-dev@latest typescript@latest eslint@latest @typescript-eslint/parser@latest @typescript-eslint/eslint-plugin@latest typescript-eslint@latest eslint-plugin-import@latest eslint-config-prettier@latest prettier@latest eslint-plugin-prettier@latest @types/express@latest @types/node@latest",
+    "npm install -D ts-node-dev@latest typescript@latest eslint@9 @typescript-eslint/parser@latest @typescript-eslint/eslint-plugin@latest typescript-eslint@latest eslint-plugin-import@latest eslint-config-prettier@latest prettier@latest eslint-plugin-prettier@latest @types/express@latest @types/node@latest",
     targetDir
   );
 
